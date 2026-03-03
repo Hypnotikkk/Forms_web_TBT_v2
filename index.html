@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experience Magique</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body class="is-entry-locked">
+    <main class="experience is-entry-locked" aria-live="polite">
+      <div class="top-logo" aria-hidden="true">
+        <img src="TBT_TOP_LOGO.png" alt="" />
+      </div>
+
+      <section class="scene" id="scene-insurance" aria-labelledby="insurance-title">
+        <div class="document">
+          <p class="kicker">Police d'Assurance Magique</p>
+          <h1 id="insurance-title">Contrat de Protection des Miracles</h1>
+
+          <p class="contract-copy">
+            Par le présent document, il est certifié que The Belgian Touch, spécialiste des expériences digitales et immersives, est couvert au titre de sa responsabilité professionnelle pour tout événement survenant dans le cadre de ses prestations et pouvant être perçu comme improbable, inexpliqué ou techniquement impossible par des tiers.
+          </p>
+
+          <p class="contract-copy">La garantie inclut notamment :</p>
+          <ul class="contract-list">
+            <li>Apparitions et disparitions d’objets réalisées dans le cadre contractuel des performances</li>
+            <li>Révélations anticipées et prédictions présentées au public</li>
+            <li>Effets influençant la perception temporelle ou sensorielle</li>
+            <li>Réactions collectives significatives consécutives à la prestation</li>
+          </ul>
+
+          <p class="contract-copy">
+            Toute situation considérée comme « irréaliste » par un spectateur sera réputée relever du cadre artistique et scénographique de la performance et ne pourra constituer un motif de contestation fondé sur une impossibilité matérielle.
+          </p>
+
+          <p class="contract-copy">
+            Ce contrat est valable pour toute prestation réalisée par The Belgian Touch dans un cadre professionnel et contractuel.
+          </p>
+
+          <p class="contract-meta">
+            Date d’effet : Immédiate<br />
+            Validité : Pour toute la durée des prestations assurées
+          </p>
+
+          <div id="insurance-overlay" aria-label="Selection de carte">
+            <button type="button" data-card="BC1.png" data-card-width="38%" aria-label="Carte bleue"></button>
+            <button type="button" data-card="RC1.png" data-card-width="38%" aria-label="Carte rouge"></button>
+            <button type="button" data-card="CARDTBT1.png" data-card-width="65%" aria-label="Carte branding"></button>
+            <button type="button" data-card="BC1.png" data-card-width="42%" data-card-rotate="90" aria-label="Carte signature"></button>
+          </div>
+
+          <div class="signature-zone" aria-label="Zone de signature">
+            <p class="signature-label">Signature</p>
+            <canvas id="signature-pad" aria-label="Signer ici"></canvas>
+          </div>
+
+          <div class="card-scene" aria-label="Carte selectionnee">
+            <div id="card-stage">
+              <img id="selected-card" src="BC1.png" alt="Carte selectionnee" draggable="false" aria-hidden="true" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="scene" id="scene-review" aria-labelledby="review-title">
+        <div class="review-scene">
+          <h2 id="review-title">Avis</h2>
+          <p class="lead">Appuie sur une étoile pour nous laisser une note !</p>
+
+          <div class="review-stars" id="review-stars" role="group" aria-label="Choix de note">
+            <button type="button" class="star-btn" data-rating="1" aria-label="1 étoile">★</button>
+            <button type="button" class="star-btn" data-rating="2" aria-label="2 étoiles">★</button>
+            <button type="button" class="star-btn" data-rating="3" aria-label="3 étoiles">★</button>
+            <button type="button" class="star-btn" data-rating="4" aria-label="4 étoiles">★</button>
+            <button type="button" class="star-btn" data-rating="5" aria-label="5 étoiles">★</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
