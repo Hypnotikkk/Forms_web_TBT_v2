@@ -49,7 +49,7 @@ function centerCard() {
   updateCardMetrics();
   const left = (cardStage.clientWidth - cardWidth) / 2;
   const top = (cardStage.clientHeight - cardHeight) / 2;
-  setCardPosition(Math.max(0, left), Math.max(0, top));
+  setCardPosition(left, top);
 }
 
 function hideCard() {
@@ -60,9 +60,18 @@ function hideCard() {
 }
 
 function showCard() {
+  const centerAfterRender = () => {
+    window.requestAnimationFrame(() => {
+      centerCard();
+    });
+  };
+
   selectedCard.classList.add("is-visible");
   selectedCard.setAttribute("aria-hidden", "false");
-  centerCard();
+  centerAfterRender();
+  if (!selectedCard.complete) {
+    selectedCard.addEventListener("load", centerAfterRender, { once: true });
+  }
 }
 
 function applyPickedCardToScene() {
