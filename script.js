@@ -3,6 +3,7 @@ const cardStage = document.getElementById("card-stage");
 const selectedCard = document.getElementById("selected-card");
 const signaturePad = document.getElementById("signature-pad");
 const experienceRoot = document.querySelector(".experience");
+const topLogoRepick = document.getElementById("top-logo-repick");
 
 const reviewStars = document.getElementById("review-stars");
 
@@ -72,6 +73,8 @@ function applyPickedCardToScene() {
 
   selectedCard.src = pickedCard.src;
   selectedCard.style.width = pickedCard.width;
+  selectedCard.style.height = "auto";
+  selectedCard.style.maxHeight = pickedCard.height;
   selectedCard.style.transform = `rotate(${pickedCard.rotation}deg)`;
   showCard();
 }
@@ -83,6 +86,7 @@ function handleInsuranceSelection(event) {
   pickedCard = {
     src: button.getAttribute("data-card") || "BC1.png",
     width: button.getAttribute("data-card-width") || "38%",
+    height: button.getAttribute("data-card-height") || button.getAttribute("data-card-width") || "38%",
     rotation: Number(button.getAttribute("data-card-rotate") || "0"),
   };
 
@@ -94,6 +98,11 @@ function handleInsuranceSelection(event) {
   setSignatureLocked(false);
   cardRemoved = false;
   applyPickedCardToScene();
+}
+
+function reopenInsuranceOverlay() {
+  if (!insuranceOverlay) return;
+  insuranceOverlay.classList.remove("is-complete");
 }
 
 function isCardOutOfViewport() {
@@ -277,4 +286,9 @@ cardStage.addEventListener("dragstart", (event) => {
 if (reviewStars) {
   reviewStars.addEventListener("click", onReviewStarClick);
 }
+
+if (topLogoRepick) {
+  topLogoRepick.addEventListener("click", reopenInsuranceOverlay);
+}
+
 setupSignaturePad();
