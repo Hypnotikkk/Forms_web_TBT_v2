@@ -230,9 +230,10 @@ h2 {
 
 #selected-card {
   position: fixed;
-  width: 38%;
-  max-width: 70%;
-  max-height: 90%;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
   display: none;
   user-select: none;
   -webkit-user-drag: none;
@@ -356,7 +357,4 @@ h2 {
     padding: 14px 12px 20px;
   }
 
-  #selected-card {
-    width: 56%;
-  }
 }
