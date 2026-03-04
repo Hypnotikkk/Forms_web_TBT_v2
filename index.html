@@ -9,26 +9,22 @@
   </head>
   <body class="is-entry-locked">
     <main class="experience is-entry-locked" aria-live="polite">
-      <div class="top-logo" aria-hidden="true">
-        <img src="TBT_TOP_LOGO.png" alt="" />
-      </div>
+      <button type="button" class="top-logo" id="top-logo-repick" aria-label="Rechoisir une carte">
+        <img src="TBT_TOP_LOGO.png" alt="The Belgian Touch" />
+      </button>
 
       <section class="scene" id="scene-insurance" aria-labelledby="insurance-title">
         <div class="document">
-          <p class="kicker">Police d'Assurance Magique</p>
-          <h1 id="insurance-title">Contrat de Protection des Miracles</h1>
+          <!--<p class="kicker">Assurance de magicien</p>-->
+          <h1 id="insurance-title">Assurance de magicien</h1>
 
           <p class="contract-copy">
             Par le présent document, il est certifié que The Belgian Touch, spécialiste des expériences digitales et immersives, est couvert au titre de sa responsabilité professionnelle pour tout événement survenant dans le cadre de ses prestations et pouvant être perçu comme improbable, inexpliqué ou techniquement impossible par des tiers.
           </p>
 
-          <p class="contract-copy">La garantie inclut notamment :</p>
-          <ul class="contract-list">
-            <li>Apparitions et disparitions d’objets réalisées dans le cadre contractuel des performances</li>
-            <li>Révélations anticipées et prédictions présentées au public</li>
-            <li>Effets influençant la perception temporelle ou sensorielle</li>
-            <li>Réactions collectives significatives consécutives à la prestation</li>
-          </ul>
+          <p class="contract-copy">
+            La garantie inclut notamment les apparitions et disparitions d’objets réalisées dans le cadre contractuel des performances. Elle couvre également les révélations anticipées et les prédictions présentées au public. Sont également comprises les situations impliquant des effets influençant la perception temporelle ou sensorielle, ainsi que les réactions collectives significatives consécutives à la prestation.
+          </p>
 
           <p class="contract-copy">
             Toute situation considérée comme « irréaliste » par un spectateur sera réputée relever du cadre artistique et scénographique de la performance et ne pourra constituer un motif de contestation fondé sur une impossibilité matérielle.
@@ -44,10 +40,10 @@
           </p>
 
           <div id="insurance-overlay" aria-label="Selection de carte">
-            <button type="button" data-card="BC1.png" data-card-width="38%" aria-label="Carte bleue"></button>
-            <button type="button" data-card="RC1.png" data-card-width="38%" aria-label="Carte rouge"></button>
-            <button type="button" data-card="CARDTBT1.png" data-card-width="65%" aria-label="Carte branding"></button>
-            <button type="button" data-card="BC1.png" data-card-width="42%" data-card-rotate="90" aria-label="Carte signature"></button>
+            <button type="button" data-card="BC1.png" data-card-width="38%" data-card-height="38%" aria-label="Carte bleue"></button>
+            <button type="button" data-card="RC1.png" data-card-width="38%" data-card-height="38%" aria-label="Carte rouge"></button>
+            <button type="button" data-card="CARDTBT1.png" data-card-width="65%" data-card-height="65%" aria-label="Carte branding"></button>
+            <button type="button" data-card="BC1.png" data-card-width="38%" data-card-height="38%" data-card-rotate="90" aria-label="Carte signature"></button>
           </div>
 
           <div class="signature-zone" aria-label="Zone de signature">
@@ -69,11 +65,31 @@
           <p class="lead">Appuie sur une étoile pour nous laisser une note !</p>
 
           <div class="review-stars" id="review-stars" role="group" aria-label="Choix de note">
-            <button type="button" class="star-btn" data-rating="1" aria-label="1 étoile">★</button>
-            <button type="button" class="star-btn" data-rating="2" aria-label="2 étoiles">★</button>
-            <button type="button" class="star-btn" data-rating="3" aria-label="3 étoiles">★</button>
-            <button type="button" class="star-btn" data-rating="4" aria-label="4 étoiles">★</button>
-            <button type="button" class="star-btn" data-rating="5" aria-label="5 étoiles">★</button>
+            <button type="button" class="star-btn" data-rating="1" aria-label="1 étoile">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z"></path>
+              </svg>
+            </button>
+            <button type="button" class="star-btn" data-rating="2" aria-label="2 étoiles">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z"></path>
+              </svg>
+            </button>
+            <button type="button" class="star-btn" data-rating="3" aria-label="3 étoiles">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z"></path>
+              </svg>
+            </button>
+            <button type="button" class="star-btn" data-rating="4" aria-label="4 étoiles">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z"></path>
+              </svg>
+            </button>
+            <button type="button" class="star-btn" data-rating="5" aria-label="5 étoiles">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z"></path>
+              </svg>
+            </button>
           </div>
         </div>
       </section>
