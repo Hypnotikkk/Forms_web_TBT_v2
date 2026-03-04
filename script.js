@@ -72,9 +72,9 @@ function applyPickedCardToScene() {
   }
 
   selectedCard.src = pickedCard.src;
-  selectedCard.style.width = pickedCard.width;
-  selectedCard.style.height = "auto";
-  selectedCard.style.maxHeight = pickedCard.height;
+  selectedCard.style.width = "auto";
+  selectedCard.style.height = pickedCard.height;
+  selectedCard.style.maxHeight = "";
   selectedCard.style.transform = `rotate(${pickedCard.rotation}deg)`;
   showCard();
 }
