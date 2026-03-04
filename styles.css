@@ -5,7 +5,9 @@
   --ink: #111111;
   --line: #d8d8d8;
   --top-logo-width: 36%;
-  --top-logo-width-mobile: 72%;
+  --top-logo-width-mobile: 40%;
+  --google-star: #fbbc04;
+  --google-star-hover: #f9ab00;
 }
 
 * {
@@ -42,13 +44,23 @@ body.is-entry-locked {
   max-width: 94vw;
   margin: 10px auto 12px;
   margin-top: 20px;
-  pointer-events: none;
+  display: block;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .top-logo img {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.top-logo:focus-visible {
+  outline: 2px solid #1a73e8;
+  outline-offset: 4px;
 }
 
 .scene {
@@ -261,31 +273,40 @@ h2 {
 .review-stars {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 2px;
+  width: 100%;
+  justify-content: center;
 }
 
 .star-btn {
   appearance: none;
-  border: 1px solid #111111;
-  background: #ffffff;
-  color: #111111;
-  border-radius: 999px;
-  width: 64px;
-  height: 64px;
-  font-size: 1.95rem;
-  line-height: 1;
+  border: 0;
+  background: transparent;
+  color: var(--google-star);
+  width: 44px;
+  height: 44px;
+  padding: 2px;
   cursor: pointer;
-  transition: transform 0.14s ease, box-shadow 0.14s ease;
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.star-btn svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
 }
 
 .star-btn:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 #111111;
+  color: var(--google-star-hover);
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 2px rgba(249, 171, 0, 0.55));
 }
 
 .star-btn:focus-visible {
-  outline: 2px solid #111111;
+  outline: 2px solid #1a73e8;
   outline-offset: 2px;
+  border-radius: 6px;
 }
 
 .btn {
