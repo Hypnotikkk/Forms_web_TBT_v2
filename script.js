@@ -9,6 +9,7 @@ const reviewStars = document.getElementById("review-stars");
 
 const EXIT_THRESHOLD = 10;
 const CARD_REVEAL_DELAY_MS = 1000;
+const CARD_ASSETS = ["BC1.png", "RC1.png", "CARDTBT1.png"];
 const THE_BELGIAN_TOUCH_REVIEW_URL =
   "https://www.google.com/search?sca_esv=cb0b2358a0071c17&rlz=1C5CHFA_enBE1181BE1190&sxsrf=ANbL-n7jzIAEYKSNTERmob-Z1T3y2eSqNg:1772525931339&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOYoMEA7-WVz03POdqDZE2kJxPj5v1pPt853UvBwEm07xuzSqDDf0F3HXFUL5sV8H9Rgq12upeDrj1HoVHrLlCZRtnkNP&q=The+Belgian+Touch+Avis&sa=X&ved=2ahUKEwjylPjTpYOTAxXQ1QIHHQzXCAcQ0bkNegQIPBAH&biw=1920&bih=963&dpr=1";
 
@@ -31,6 +32,19 @@ let signatureIsDrawing = false;
 let signatureLastX = 0;
 let signatureLastY = 0;
 let signatureContext = null;
+const preloadedCardImages = [];
+
+function preloadCardAssets() {
+  for (const src of CARD_ASSETS) {
+    const image = new Image();
+    image.decoding = "async";
+    image.src = src;
+    if (typeof image.decode === "function") {
+      image.decode().catch(() => {});
+    }
+    preloadedCardImages.push(image);
+  }
+}
 
 function updateCardMetrics() {
   const rect = selectedCard.getBoundingClientRect();
@@ -98,6 +112,11 @@ function handleInsuranceSelection(event) {
     height: button.getAttribute("data-card-height") || button.getAttribute("data-card-width") || "38%",
     rotation: Number(button.getAttribute("data-card-rotate") || "0"),
   };
+
+  selectedCard.src = pickedCard.src;
+  if (typeof selectedCard.decode === "function") {
+    selectedCard.decode().catch(() => {});
+  }
 
   insuranceOverlay.classList.add("is-complete");
   if (experienceRoot) {
@@ -300,4 +319,5 @@ if (topLogoRepick) {
   topLogoRepick.addEventListener("click", reopenInsuranceOverlay);
 }
 
+preloadCardAssets();
 setupSignaturePad();
