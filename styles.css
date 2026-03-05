@@ -157,6 +157,10 @@ h2 {
   pointer-events: none;
 }
 
+#insurance-overlay.is-guarded {
+  pointer-events: none;
+}
+
 #insurance-overlay button {
   appearance: none;
   border: none;
@@ -248,6 +252,22 @@ h2 {
 
 #selected-card:active {
   cursor: grabbing;
+}
+
+#selected-card-dot {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  top: 10px;
+  left: 10px;
+  border-radius: 999px;
+  display: none;
+  pointer-events: none;
+  z-index: 90;
+}
+
+#selected-card-dot.is-visible {
+  display: block;
 }
 
 .review-scene {
