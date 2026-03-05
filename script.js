@@ -1,6 +1,7 @@
 const insuranceOverlay = document.getElementById("insurance-overlay");
 const cardStage = document.getElementById("card-stage");
 const selectedCard = document.getElementById("selected-card");
+const selectedCardDot = document.getElementById("selected-card-dot");
 const signaturePad = document.getElementById("signature-pad");
 const experienceRoot = document.querySelector(".experience");
 const topLogoRepick = document.getElementById("top-logo-repick");
@@ -8,6 +9,7 @@ const topLogoRepick = document.getElementById("top-logo-repick");
 const reviewStars = document.getElementById("review-stars");
 
 const EXIT_THRESHOLD = 10;
+const OVERLAY_REOPEN_GUARD_MS = 1200;
 const CARD_REVEAL_DELAY_MS = 1000;
 const CARD_ASSETS = ["BC1.png", "RC1.png", "CARDTBT1.png"];
 const THE_BELGIAN_TOUCH_REVIEW_URL =
@@ -15,8 +17,12 @@ const THE_BELGIAN_TOUCH_REVIEW_URL =
 
 let pickedCard = null;
 let cardRemoved = false;
+let cardPermanentlyRemoved = false;
+let hasCardAppeared = false;
 let cardRevealReady = false;
 let cardRevealTimer = null;
+let overlaySelectionUnlockedAt = 0;
+let overlayGuardTimer = null;
 
 let isDragging = false;
 let dragOffsetX = 0;
@@ -32,6 +38,7 @@ let signatureIsDrawing = false;
 let signatureLastX = 0;
 let signatureLastY = 0;
 let signatureContext = null;
+let cardDotColor = "";
 const preloadedCardImages = [];
 
 function preloadCardAssets() {
@@ -50,6 +57,29 @@ function updateCardMetrics() {
   const rect = selectedCard.getBoundingClientRect();
   cardWidth = rect.width;
   cardHeight = rect.height;
+}
+
+function getCardDotColor(src) {
+  const normalized = (src || "").split("?")[0].split("#")[0];
+  const fileName = normalized.split("/").pop()?.toUpperCase() || "";
+  if (fileName === "BC1.PNG") return "#1a73e8";
+  if (fileName === "RC1.PNG") return "#d93025";
+  if (fileName === "CARDTBT1.PNG") return "#111111";
+  return "";
+}
+
+function hideCardDot() {
+  if (!selectedCardDot) return;
+  selectedCardDot.classList.remove("is-visible");
+}
+
+function showCardDot() {
+  if (!selectedCardDot || !cardDotColor) {
+    hideCardDot();
+    return;
+  }
+  selectedCardDot.style.background = cardDotColor;
+  selectedCardDot.classList.add("is-visible");
 }
 
 function setCardPosition(x, y) {
@@ -77,9 +107,11 @@ function showCard() {
   const centerAfterRender = () => {
     window.requestAnimationFrame(() => {
       centerCard();
+      showCardDot();
     });
   };
 
+  hasCardAppeared = true;
   selectedCard.classList.add("is-visible");
   selectedCard.setAttribute("aria-hidden", "false");
   centerAfterRender();
@@ -89,11 +121,12 @@ function showCard() {
 }
 
 function applyPickedCardToScene() {
-  if (!pickedCard || !signatureReady || !cardRevealReady || cardRemoved) {
+  if (cardPermanentlyRemoved || !pickedCard || !signatureReady || !cardRevealReady || cardRemoved) {
     hideCard();
     return;
   }
 
+  cardDotColor = getCardDotColor(pickedCard.src);
   selectedCard.src = pickedCard.src;
   selectedCard.style.width = "auto";
   selectedCard.style.height = pickedCard.height;
@@ -103,6 +136,10 @@ function applyPickedCardToScene() {
 }
 
 function handleInsuranceSelection(event) {
+  if (hasCardAppeared) return;
+  if (cardPermanentlyRemoved) return;
+  if (Date.now() < overlaySelectionUnlockedAt) return;
+
   const button = event.target.closest("button[data-card]");
   if (!button) return;
 
@@ -113,6 +150,8 @@ function handleInsuranceSelection(event) {
     rotation: Number(button.getAttribute("data-card-rotate") || "0"),
   };
 
+  cardDotColor = getCardDotColor(pickedCard.src);
+  showCardDot();
   selectedCard.src = pickedCard.src;
   if (typeof selectedCard.decode === "function") {
     selectedCard.decode().catch(() => {});
@@ -130,7 +169,18 @@ function handleInsuranceSelection(event) {
 
 function reopenInsuranceOverlay() {
   if (!insuranceOverlay) return;
+  if (hasCardAppeared) return;
+  if (cardPermanentlyRemoved) return;
+  overlaySelectionUnlockedAt = Date.now() + OVERLAY_REOPEN_GUARD_MS;
   insuranceOverlay.classList.remove("is-complete");
+  insuranceOverlay.classList.add("is-guarded");
+  if (overlayGuardTimer !== null) {
+    window.clearTimeout(overlayGuardTimer);
+  }
+  overlayGuardTimer = window.setTimeout(() => {
+    overlayGuardTimer = null;
+    insuranceOverlay.classList.remove("is-guarded");
+  }, OVERLAY_REOPEN_GUARD_MS);
 }
 
 function isCardOutOfViewport() {
@@ -168,8 +218,17 @@ function onCardPointerMove(event) {
     if (selectedCard.hasPointerCapture(event.pointerId)) {
       selectedCard.releasePointerCapture(event.pointerId);
     }
+    cardPermanentlyRemoved = true;
     cardRemoved = true;
+    pickedCard = null;
+    insuranceOverlay.classList.add("is-complete");
+    insuranceOverlay.classList.remove("is-guarded");
+    if (overlayGuardTimer !== null) {
+      window.clearTimeout(overlayGuardTimer);
+      overlayGuardTimer = null;
+    }
     hideCard();
+    hideCardDot();
   }
 }
 
@@ -184,7 +243,7 @@ function onCardPointerUp(event) {
 function onReviewStarClick(event) {
   const starButton = event.target.closest("button[data-rating]");
   if (!starButton) return;
-  window.location.href = THE_BELGIAN_TOUCH_REVIEW_URL;
+  window.location.replace(THE_BELGIAN_TOUCH_REVIEW_URL);
 }
 
 function clearCardRevealTimer() {
