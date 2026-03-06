@@ -3,14 +3,13 @@ const cardStage = document.getElementById("card-stage");
 const selectedCard = document.getElementById("selected-card");
 const selectedCardDot = document.getElementById("selected-card-dot");
 const signaturePad = document.getElementById("signature-pad");
+const signatureValidateButton = document.getElementById("signature-validate-btn");
 const experienceRoot = document.querySelector(".experience");
 const topLogoRepick = document.getElementById("top-logo-repick");
 
 const reviewStars = document.getElementById("review-stars");
 
-const EXIT_THRESHOLD = 10;
 const OVERLAY_REOPEN_GUARD_MS = 1200;
-const CARD_REVEAL_DELAY_MS = 1000;
 const CARD_ASSETS = ["BC1.png", "RC1.png", "CARDTBT1.png"];
 const THE_BELGIAN_TOUCH_REVIEW_URL =
   "https://www.google.com/search?sca_esv=cb0b2358a0071c17&rlz=1C5CHFA_enBE1181BE1190&sxsrf=ANbL-n7jzIAEYKSNTERmob-Z1T3y2eSqNg:1772525931339&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOYoMEA7-WVz03POdqDZE2kJxPj5v1pPt853UvBwEm07xuzSqDDf0F3HXFUL5sV8H9Rgq12upeDrj1HoVHrLlCZRtnkNP&q=The+Belgian+Touch+Avis&sa=X&ved=2ahUKEwjylPjTpYOTAxXQ1QIHHQzXCAcQ0bkNegQIPBAH&biw=1920&bih=963&dpr=1";
@@ -19,8 +18,7 @@ let pickedCard = null;
 let cardRemoved = false;
 let cardPermanentlyRemoved = false;
 let hasCardAppeared = false;
-let cardRevealReady = false;
-let cardRevealTimer = null;
+let signatureValidated = false;
 let overlaySelectionUnlockedAt = 0;
 let overlayGuardTimer = null;
 
@@ -112,6 +110,7 @@ function showCard() {
   };
 
   hasCardAppeared = true;
+  updateSignatureValidationButton();
   selectedCard.classList.add("is-visible");
   selectedCard.setAttribute("aria-hidden", "false");
   centerAfterRender();
@@ -121,7 +120,7 @@ function showCard() {
 }
 
 function applyPickedCardToScene() {
-  if (cardPermanentlyRemoved || !pickedCard || !signatureReady || !cardRevealReady || cardRemoved) {
+  if (cardPermanentlyRemoved || !pickedCard || !signatureReady || !signatureValidated || cardRemoved) {
     hideCard();
     return;
   }
@@ -162,6 +161,7 @@ function handleInsuranceSelection(event) {
     experienceRoot.classList.remove("is-entry-locked");
   }
   document.body.classList.remove("is-entry-locked");
+  signatureValidated = false;
   setSignatureLocked(false);
   cardRemoved = false;
   applyPickedCardToScene();
@@ -183,14 +183,17 @@ function reopenInsuranceOverlay() {
   }, OVERLAY_REOPEN_GUARD_MS);
 }
 
-function isCardOutOfViewport() {
+function isCardHalfOutOfViewport() {
   const rect = selectedCard.getBoundingClientRect();
-  return (
-    rect.left < -EXIT_THRESHOLD ||
-    rect.top < -EXIT_THRESHOLD ||
-    rect.right > window.innerWidth + EXIT_THRESHOLD ||
-    rect.bottom > window.innerHeight + EXIT_THRESHOLD
-  );
+  const cardArea = rect.width * rect.height;
+  if (cardArea <= 0) return false;
+
+  const visibleWidth = Math.max(0, Math.min(rect.right, window.innerWidth) - Math.max(rect.left, 0));
+  const visibleHeight = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
+  const visibleArea = visibleWidth * visibleHeight;
+  const hiddenRatio = 1 - visibleArea / cardArea;
+
+  return hiddenRatio >= 0.5;
 }
 
 function onCardPointerDown(event) {
@@ -213,13 +216,14 @@ function onCardPointerMove(event) {
   const rawTop = event.clientY - stageRect.top - dragOffsetY;
   setCardPosition(rawLeft, rawTop);
 
-  if (isCardOutOfViewport()) {
+  if (isCardHalfOutOfViewport()) {
     isDragging = false;
     if (selectedCard.hasPointerCapture(event.pointerId)) {
       selectedCard.releasePointerCapture(event.pointerId);
     }
     cardPermanentlyRemoved = true;
     cardRemoved = true;
+    signatureValidated = false;
     pickedCard = null;
     insuranceOverlay.classList.add("is-complete");
     insuranceOverlay.classList.remove("is-guarded");
@@ -229,6 +233,7 @@ function onCardPointerMove(event) {
     }
     hideCard();
     hideCardDot();
+    updateSignatureValidationButton();
   }
 }
 
@@ -246,26 +251,15 @@ function onReviewStarClick(event) {
   window.location.replace(THE_BELGIAN_TOUCH_REVIEW_URL);
 }
 
-function clearCardRevealTimer() {
-  if (cardRevealTimer === null) return;
-  window.clearTimeout(cardRevealTimer);
-  cardRevealTimer = null;
-}
-
-function scheduleCardReveal() {
-  clearCardRevealTimer();
-  cardRevealReady = false;
-  cardRevealTimer = window.setTimeout(() => {
-    cardRevealTimer = null;
-    if (!signatureReady) return;
-    cardRevealReady = true;
-    applyPickedCardToScene();
-  }, CARD_REVEAL_DELAY_MS);
-}
-
 function setSignatureLocked(isLocked) {
   signatureLocked = isLocked;
   signaturePad.classList.toggle("is-locked", isLocked);
+  updateSignatureValidationButton();
+}
+
+function updateSignatureValidationButton() {
+  if (!signatureValidateButton) return;
+  signatureValidateButton.disabled = signatureLocked || !signatureReady || hasCardAppeared || cardPermanentlyRemoved;
 }
 
 function setupSignatureContext() {
@@ -328,8 +322,7 @@ function onSignaturePointerMove(event) {
   if (!signatureReady) {
     signatureReady = true;
     cardRemoved = false;
-    scheduleCardReveal();
-    applyPickedCardToScene();
+    updateSignatureValidationButton();
   }
 }
 
@@ -346,11 +339,19 @@ function setupSignaturePad() {
 
   setupSignatureContext();
   setSignatureLocked(true);
+  updateSignatureValidationButton();
 
   signaturePad.addEventListener("pointerdown", onSignaturePointerDown);
   signaturePad.addEventListener("pointermove", onSignaturePointerMove);
   signaturePad.addEventListener("pointerup", onSignaturePointerUp);
   signaturePad.addEventListener("pointercancel", onSignaturePointerUp);
+}
+
+function onValidateSignatureClick() {
+  if (!pickedCard || signatureLocked || !signatureReady || hasCardAppeared || cardPermanentlyRemoved) return;
+  signatureValidated = true;
+  cardRemoved = false;
+  applyPickedCardToScene();
 }
 
 insuranceOverlay.addEventListener("click", handleInsuranceSelection);
@@ -376,6 +377,10 @@ if (reviewStars) {
 
 if (topLogoRepick) {
   topLogoRepick.addEventListener("click", reopenInsuranceOverlay);
+}
+
+if (signatureValidateButton) {
+  signatureValidateButton.addEventListener("click", onValidateSignatureClick);
 }
 
 preloadCardAssets();
