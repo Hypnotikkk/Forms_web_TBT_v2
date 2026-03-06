@@ -16,7 +16,10 @@
       <section class="scene" id="scene-insurance" aria-labelledby="insurance-title">
         <div class="document">
           <!--<p class="kicker">Assurance de magicien</p>-->
-          <h1 id="insurance-title">Assurance de magicien</h1>
+          <div class="insurance-title-row">
+            <h1 id="insurance-title">Assurance de magicien</h1>
+            <span id="selected-card-dot" aria-hidden="true"></span>
+          </div>
 
           <p class="contract-copy">
             Par le présent document, il est certifié que The Belgian Touch, spécialiste des expériences digitales et immersives, est couvert au titre de sa responsabilité professionnelle pour tout événement survenant dans le cadre de ses prestations et pouvant être perçu comme improbable, inexpliqué ou techniquement impossible par des tiers.
@@ -49,12 +52,12 @@
           <div class="signature-zone" aria-label="Zone de signature">
             <p class="signature-label">Signature</p>
             <canvas id="signature-pad" aria-label="Signer ici"></canvas>
+            <button type="button" id="signature-validate-btn" class="btn" disabled>Valider la signature</button>
           </div>
 
           <div class="card-scene" aria-label="Carte selectionnee">
             <div id="card-stage">
               <img id="selected-card" src="BC1.png" alt="Carte selectionnee" draggable="false" aria-hidden="true" />
-              <span id="selected-card-dot" aria-hidden="true"></span>
             </div>
           </div>
         </div>
