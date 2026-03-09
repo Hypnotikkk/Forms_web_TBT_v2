@@ -193,7 +193,7 @@ function isCardHalfOutOfViewport() {
   const visibleArea = visibleWidth * visibleHeight;
   const hiddenRatio = 1 - visibleArea / cardArea;
 
-  return hiddenRatio >= 0.5;
+  return hiddenRatio >= 0.3;
 }
 
 function onCardPointerDown(event) {
